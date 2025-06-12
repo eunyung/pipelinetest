@@ -7,7 +7,7 @@ pipeline {
 				credential = 8301a965-a76e-4eeb-8d11-95e2f5c5b46f
 				registry = "acrrancher.azurecr.io/hellospring"
 				image = "hellospring"
-				tag = "0.0.1-SNAPSHOT"
+				tag = "0.1.${env.BUILD_NUMBER}"
 			}
 			steps {
 				script {
