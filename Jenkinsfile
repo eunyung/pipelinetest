@@ -1,8 +1,8 @@
 pipeline {
-	agent {node{label 'main'}}
+	agent {node{label 'jenkins-jenkins-agent'}}
 	stages {
 		stage("Docker") {
-			agent{node{label 'main'}}
+			agent{node{label 'jenkins-jenkins-agent'}}
 			environment{
 				credential = "8301a965-a76e-4eeb-8d11-95e2f5c5b46f"
 				registry = "acrrancher.azurecr.io/hellospring"
