@@ -16,7 +16,7 @@ pipeline {
 					// 	img.push()
 					// }
 				 	//sh "docker rmi $registry/$image:$tag" // docker image 제거
-			                 sh "docker --version"
+			                 sh "docker info"
 				}
 			}
 		}
