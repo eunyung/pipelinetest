@@ -17,7 +17,8 @@ pipeline {
 					// }
 				 	//sh "docker rmi $registry/$image:$tag" // docker image 제거
 			                 sh 'which docker'
-					sh 'ps -ef | grep dockerd'
+					sh 'systemctl status docker'
+					sh 'sudo systemctl status docker'
 				}
 			}
 		}
