@@ -1,8 +1,8 @@
 pipeline {
-	agent { label 'jenkins-jenkins-agent' }
+	agent { label 'docker' }
 	stages {
 		stage("Docker") {
-			agent { label 'jenkins-jenkins-agent' }
+			agent { label 'docker' }
 			environment{
 				credential = "acracceeskey"
 				registry = "acrrancher.azurecr.io"
