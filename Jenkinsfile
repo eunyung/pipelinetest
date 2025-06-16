@@ -5,7 +5,7 @@ pipeline {
 			agent { label 'jenkins-jenkins-agent' }
 			environment{
 				credential = "acracceeskey"
-				registry = "acrrancher.azurecr.io/hellospring"
+				registry = "acrrancher.azurecr.io"
 				image = "hellospring"
 				tag = "0.1.${env.BUILD_NUMBER}"
 			}
