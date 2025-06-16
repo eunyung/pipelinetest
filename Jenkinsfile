@@ -11,14 +11,11 @@ pipeline {
 			}
 			steps {
 				script {
-					// withDockerRegistry(credentialsId: "$credential", url: "https://$registry") {
-					// 	def img = docker.build("$registry/$image:$tag", "--network host .")
-					// 	img.push()
-					// }
-				 	//sh "docker rmi $registry/$image:$tag" // docker image 제거
-			                 sh 'which docker'
-					sh 'systemctl status docker'
-					sh 'sudo systemctl status docker'
+					 withDockerRegistry(credentialsId: "$credential", url: "https://$registry") {
+					 	def img = docker.build("$registry/$image:$tag", "--network host .")
+					 	img.push()
+					 }
+				 	sh "docker rmi $registry/$image:$tag" // docker image 제거
 				}
 			}
 		}
