@@ -16,8 +16,8 @@ pipeline {
 					// 	img.push()
 					// }
 				 	//sh "docker rmi $registry/$image:$tag" // docker image 제거
-					sh 'whoami && id && groups'
-					sh 'id'
+                    def output = sh(script: 'ls -l /var/run/docker.sock', returnStdout: true).trim()
+                    echo "Socket Info: ${output}"
 				}
 			}
 		}
