@@ -1,52 +1,35 @@
 pipeline {
-	agent { label 'jenkins-jenkins-agent' }
-	stages {
-		stage("Docker") {
-			agent { label 'jenkins-jenkins-agent' }
-			environment{
-				credential = "acracceeskey"
-				registry = "acrrancher.azurecr.io"
-				image = "hellospring"
-				tag = "0.1.${env.BUILD_NUMBER}"
-			}
-			steps {
-				script {
-					 withDockerRegistry(credentialsId: "$credential", url: "https://$registry") {
-					 	def img = docker.build("$registry/$image:$tag", "--network host .")
-					 	img.push()
-					 }
-				 	sh "docker rmi $registry/$image:$tag" // docker image 제거
-				}
-			}
-		}
+    agent {
+        label 'azcli' // az cli가 설치된 agent pod
+    }
 
-		// stage('K8S Manifest Update') {
-		//     environment{
-        //         tag = "0.1.${env.BUILD_NUMBER}"
-        //     }
-        //     steps {
-        //         git branch: "main",
-        //             credentialsId: "{gitlab accesstoken 관련 credential ID}",
-        //             url: "{manifest 파일 저장된 gitlab url}"
+    environment {
+        IMAGE_NAME = 'hellospring'
+        ACR_NAME = 'acrrancher' // ACR 이름만, .azurecr.io 제외
+        DOCKERFILE_PATH = '.'   // Dockerfile 위치 (예: ./ 또는 ./src 등)
+        TENANT = '7b79809c-09b9-4baa-ab98-ef8d94c6923f'
+        TAG = "0.1.${env.BUILD_NUMBER}"
+    }
 
-        //         withCredentials([usernamePassword(credentialsId: '{gitlab accesstoken 관련 credential ID}', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-        //             sh '''
-        //             git config --local credential.helper "!f() { echo username=$GIT_USERNAME; echo password=$GIT_PASSWORD; }; f"
-        //             sed -i "s/{image명}:.*\$/{image명}:$tag/g" {image명}/${BUILD_ENV}/deployment.yaml
-        //             git add {image명}/${BUILD_ENV}/deployment.yaml
-        //             git commit -m "[UPDATE] {image명} $tag image versioning"
-        //             git push origin main
-        //             '''
-        //         }
-        //     }
-        //     post {
-        //             failure {
-        //               echo 'K8S Manifest Update failure !'
-        //             }
-        //             success {
-        //               echo 'K8S Manifest Update success !'
-        //             }
-        //     }
-        // }
-	}
+    stages {
+        stage('Login to Azure') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'jenkins-sp', usernameVariable: 'AZURE_CLIENT_ID', passwordVariable: 'AZURE_CLIENT_SECRET')
+                ]) {
+                    sh '''
+                        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $TENANT --output none
+                    '''
+                }
+            }
+        }
+
+        stage('Build and Push to ACR') {
+            steps {
+                sh '''
+                    az acr build --registry $ACR_NAME --image $IMAGE_NAME:$TAG $DOCKERFILE_PATH
+                '''
+            }
+        }
+    }
 }
