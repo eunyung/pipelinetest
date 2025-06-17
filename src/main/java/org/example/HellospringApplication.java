@@ -1,13 +1,10 @@
-package com.example.hellospring;
+package org.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class HellospringApplication {
-
     public static void main(String[] args) {
-        SpringApplication.run(HellospringApplication.class, args);
-    }
-
+        SpringApplication.run(HellospringApplication.class, args);}
 }
