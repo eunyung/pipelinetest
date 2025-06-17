@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'azcli' // az cli가 설치된 agent pod
-    }
+    agent { kubernetes { label 'azcli' } }
 
     environment {
         IMAGE_NAME = 'hellospring'
@@ -13,7 +11,8 @@ pipeline {
 
     stages {
         stage('Login to Azure') {
-            steps {
+            steps 
+             container('azcli'){
                 withCredentials([
                     usernamePassword(credentialsId: 'jenkins-sp', usernameVariable: 'AZURE_CLIENT_ID', passwordVariable: 'AZURE_CLIENT_SECRET')
                 ]) {
@@ -25,7 +24,8 @@ pipeline {
         }
 
         stage('Build and Push to ACR') {
-            steps {
+            steps 
+             container('azcli'){
                 sh '''
                     az acr build --registry $ACR_NAME --image $IMAGE_NAME:$TAG $DOCKERFILE_PATH
                 '''
