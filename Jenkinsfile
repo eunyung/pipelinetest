@@ -11,24 +11,37 @@ pipeline {
 
     stages {
         stage('Login to Azure') {
-            steps 
-             container('azcli'){
-                withCredentials([
-                    usernamePassword(credentialsId: 'jenkins-sp', usernameVariable: 'AZURE_CLIENT_ID', passwordVariable: 'AZURE_CLIENT_SECRET')
-                ]) {
-                    sh '''
-                        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $TENANT --output none
-                    '''
+            steps {
+                container('azcli') {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'jenkins-sp',
+                            usernameVariable: 'AZURE_CLIENT_ID',
+                            passwordVariable: 'AZURE_CLIENT_SECRET'
+                        )
+                    ]) {
+                        sh '''
+                            az login --service-principal \
+                              -u $AZURE_CLIENT_ID \
+                              -p $AZURE_CLIENT_SECRET \
+                              --tenant $TENANT \
+                              --output none
+                        '''
+                    }
                 }
             }
         }
 
         stage('Build and Push to ACR') {
-            steps 
-             container('azcli'){
-                sh '''
-                    az acr build --registry $ACR_NAME --image $IMAGE_NAME:$TAG $DOCKERFILE_PATH
-                '''
+            steps {
+                container('azcli') {
+                    sh '''
+                        az acr build \
+                          --registry $ACR_NAME \
+                          --image $IMAGE_NAME:$TAG \
+                          $DOCKERFILE_PATH
+                    '''
+                }
             }
         }
     }
