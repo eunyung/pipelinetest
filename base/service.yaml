@@ -6,7 +6,7 @@ metadata:
     app: hellospring
 spec:
   ports:
-    - port: 8081
+    - port: 8080
   selector:
     app: demo
   type: LoadBalancer
