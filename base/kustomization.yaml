@@ -1,0 +1,6 @@
+commonLabels:
+  app: hellospring
+
+resources:
+- deployment.yaml
+- service.yaml
