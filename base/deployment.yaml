@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: hellospring-container
-        image: acrrancher.azurecr.io/hellospring:latest
+        image: acrrancher.azurecr.io/hellospring
         ports:
         - containerPort: 8080
         imagePullPolicy: Always

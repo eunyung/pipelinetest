@@ -1,19 +1,19 @@
 pipeline {
-    agent { kubernetes { label 'azcli' } }
+    agent { kubernetes { label 'azcligit' } }
 
     environment {
         IMAGE_NAME = 'hellospring'
         ACR_NAME = 'acrrancher' // ACR 이름만, .azurecr.io 제외
         DOCKERFILE_PATH = './app'   // Dockerfile 위치 (예: ./ 또는 ./src 등)
         TENANT = '7b79809c-09b9-4baa-ab98-ef8d94c6923f'
-        // TAG = "0.1.${env.BUILD_NUMBER}"
-        TAG = "latest"
+        TAG = "0.1.${env.BUILD_NUMBER}"
+        //  = "latest"
     }
 
     stages {
         stage('Login to Azure') {
             steps {
-                container('azcli') {
+                container('azcligit') {
                     withCredentials([
                         usernamePassword(
                             credentialsId: 'jenkins-sp',
@@ -35,7 +35,7 @@ pipeline {
 
         stage('Build and Push to ACR') {
             steps {
-                container('azcli') {
+                container('azcligit') {
                     sh '''
                         az acr build \
                           --registry $ACR_NAME \
@@ -45,5 +45,28 @@ pipeline {
                 }
             }
         }
+
+        stage('image tag update') {
+            steps {
+                container('azcligit') {
+                withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        {
+                        sh '''
+                        git config --global user.email "tark3927@gmail.com"
+                        git config --global user.name "eunyung"
+
+                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/eunyung/pipelinetest.git
+                        cd pipelinetest
+
+                        sed -i 's|newTag:.*|newTag: ${TAG}|' base/kustomization.yaml
+
+                        git commit -am "Update image tag to ${TAG}"
+                        git push origin main
+                        '''
+                    }
+                }
+            }
+        }
+
     }
 }
