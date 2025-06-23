@@ -2,7 +2,7 @@ pipeline {
     agent { kubernetes { label 'azcli' } }
 
     environment {
-        IMAGE_NAME = 'hellospring'
+        IMAGE_NAME = 'azcligit'
         ACR_NAME = 'acrrancher' // ACR 이름만, .azurecr.io 제외
         DOCKERFILE_PATH = './app'   // Dockerfile 위치 (예: ./ 또는 ./src 등)
         TENANT = '7b79809c-09b9-4baa-ab98-ef8d94c6923f'
