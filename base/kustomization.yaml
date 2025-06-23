@@ -7,4 +7,4 @@ resources:
 
 images:
   - name: acrrancher.azurecr.io/hellospring
-    newTag: latest
+    newTag: ${TAG}
