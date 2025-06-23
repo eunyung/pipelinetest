@@ -6,7 +6,8 @@ pipeline {
         ACR_NAME = 'acrrancher' // ACR 이름만, .azurecr.io 제외
         DOCKERFILE_PATH = './app'   // Dockerfile 위치 (예: ./ 또는 ./src 등)
         TENANT = '7b79809c-09b9-4baa-ab98-ef8d94c6923f'
-        TAG = "0.1.${env.BUILD_NUMBER}"
+        #TAG = "0.1.${env.BUILD_NUMBER}"
+        TAG = "latest"
     }
 
     stages {
